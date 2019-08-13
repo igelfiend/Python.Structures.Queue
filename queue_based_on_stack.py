@@ -35,27 +35,29 @@ class Stack:
 
 class StackBasedQueue:
     def __init__(self):
-        self.active_stack = Stack()
-        self.passive_stack = Stack()
+        self.stack = Stack()
+        self.temp_stack = Stack()
 
     def size(self):
-        return self.active_stack.size()
+        return self.stack.size()
 
     def enqueue(self, item):
-        self.active_stack.push(item)
+        self.stack.push(item)
 
     def dequeue(self):
-        if self.active_stack.size() == 0:
+        if self.stack.size() == 0:
             return None
 
-        # Replacing all data to other stack (excepting last required element)
-        for i in range(self.active_stack.size()-1):
-            self.passive_stack.push(self.active_stack.pop())
+        # Replacing all data to temp stack (excepting last required element)
+        for i in range(self.stack.size()-1):
+            self.temp_stack.push(self.stack.pop())
 
-        # Switching pointers
-        tmp = self.active_stack
-        self.active_stack = self.passive_stack
-        self.passive_stack = tmp
+        # Receiving data
+        value = deepcopy(self.stack.pop())
+
+        # Returning all data back
+        for i in range(self.temp_stack.size()):
+            self.stack.push(self.temp_stack.pop())
 
         # Receiving required element
-        return self.passive_stack.pop()
+        return value
